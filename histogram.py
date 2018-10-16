@@ -124,13 +124,31 @@ class App(QMainWindow):
     def histogramButtonClicked(self):
         if not self.inputLoaded and not self.targetLoaded:
             # Error: "First load input and target images" in MessageBox
-            return NotImplementedError
-        if not self.inputLoaded:
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Warning)
+            msg.setWindowTitle("Input and target images are missing.")
+            msg.setText('First load input and target images!')
+            msg.setStandardButtons(QMessageBox.Ok)
+
+            msg.exec()
+        elif not self.inputLoaded:
             # Error: "Load input image" in MessageBox
-            return NotImplementedError
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Warning)
+            msg.setWindowTitle("Input image is missing.")
+            msg.setText('Load input image!')
+            msg.setStandardButtons(QMessageBox.Ok)
+
+            msg.exec()
         elif not self.targetLoaded:
             # Error: "Load target image" in MessageBox
-            return NotImplementedError
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Warning)
+            msg.setWindowTitle("Target image is missing.")
+            msg.setText('Load target image!')
+            msg.setStandardButtons(QMessageBox.Ok)
+
+            msg.exec()
 
     def calcHistogram(self, I):
         # Calculate histogram
