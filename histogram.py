@@ -30,6 +30,9 @@ class App(QMainWindow):
 
         fName = QFileDialog.getOpenFileName(self, 'Open input file', './', 'Image files (*.png *.jpg)')
 
+        if fName[0] == '':
+            return
+
         if self.inputLoaded:
             self.deleteItemsFromWidget(self.inputGroupBox.layout())
 
@@ -46,6 +49,9 @@ class App(QMainWindow):
     def openTargetImage(self):
         # This function is called when the user clicks File->Target Image.
         fName = QFileDialog.getOpenFileName(self, 'Open target file', './', 'Image files (*.png *.jpg)')
+
+        if fName[0] == '':
+            return
 
         if self.targetLoaded:
             self.deleteItemsFromWidget(self.targetGroupBox.layout())
