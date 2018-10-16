@@ -19,15 +19,46 @@ class App(QMainWindow):
 
         self.title = 'Histogram Equalization'
 
+        self.inputLoaded = False
+        self.targetLoaded = False
+        self.resultLoaded = False
+
         self.initUI()
 
     def openInputImage(self):
         # This function is called when the user clicks File->Input Image.
-        return NotImplementedError
+
+        fName = QFileDialog.getOpenFileName(self, 'Open input file', './', 'Image files (*.png *.jpg)')
+
+        if self.inputLoaded:
+            self.deleteItemsFromWidget(self.inputGroupBox.layout())
+
+        if self.resultLoaded:
+            self.deleteItemsFromWidget(self.targetGroupBox.layout())
+
+        self.inputLoaded = True
+        self.inputImage = QPixmap(fName[0])
+
+        label = QLabel('Input image')
+        label.setPixmap(self.inputImage)
+        self.inputGroupBox.layout().addWidget(label)
 
     def openTargetImage(self):
         # This function is called when the user clicks File->Target Image.
-        return NotImplementedError
+        fName = QFileDialog.getOpenFileName(self, 'Open target file', './', 'Image files (*.png *.jpg)')
+
+        if self.targetLoaded:
+            self.deleteItemsFromWidget(self.targetGroupBox.layout())
+
+        if self.resultLoaded:
+            self.deleteItemsFromWidget(self.targetGroupBox.layout())
+
+        self.targetLoaded = True
+        self.targetImage = QPixmap(fName[0])
+
+        label = QLabel('Target image')
+        label.setPixmap(self.targetImage)
+        self.targetGroupBox.layout().addWidget(label)
 
     def initUI(self):
         menubar = self.menuBar()
@@ -104,6 +135,16 @@ class App(QMainWindow):
     def calcHistogram(self, I):
         # Calculate histogram
         return NotImplementedError
+
+    def deleteItemsFromWidget(self, layout):
+        if layout is not None:
+            while layout.count():
+                item = layout.takeAt(0)
+                widget = item.widget()
+                if widget is not None:
+                    widget.deleteLater()
+                else:
+                    deleteItemsFromWidget(item.layout())
 
 class PlotCanvas(FigureCanvas):
     def __init__(self, hist, parent=None, width=5, height=4, dpi=100):
