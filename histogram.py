@@ -52,9 +52,43 @@ class App(QMainWindow):
         toolbar = self.addToolBar('Histogram Equalization')
         toolbar.addAction(histogramAct)
 
+        self.createEmptyInputGroupBox()
+        self.createEmptyTargetGroupBox()
+        self.createEmptyResultGroupBox()
+
+        # Since QMainWindows layout has already been set, create central widget
+        # to manipulate layout of main window
+        wid = QWidget(self)
+        self.setCentralWidget(wid)
+
+        # Initialize input, target, result boxes
+        windowLayout = QGridLayout()
+        windowLayout.addWidget(self.inputGroupBox, 0, 0)
+        windowLayout.addWidget(self.targetGroupBox, 0, 1)
+        windowLayout.addWidget(self.resultGroupBox, 0, 2)
+        wid.setLayout(windowLayout)
+
         self.setWindowTitle(self.title) 
         self.showMaximized()
         self.show()
+
+    def createEmptyInputGroupBox(self):
+        self.inputGroupBox = QGroupBox('Input')
+        layout = QVBoxLayout()
+
+        self.inputGroupBox.setLayout(layout)
+
+    def createEmptyTargetGroupBox(self):
+        self.targetGroupBox = QGroupBox('Target')
+        layout = QVBoxLayout()
+
+        self.targetGroupBox.setLayout(layout)
+
+    def createEmptyResultGroupBox(self):
+        self.resultGroupBox = QGroupBox('Result')
+        layout = QVBoxLayout()
+
+        self.resultGroupBox.setLayout(layout)
 
     def histogramButtonClicked(self):
         if not self.inputLoaded and not self.targetLoaded:
