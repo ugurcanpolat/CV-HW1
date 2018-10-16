@@ -45,9 +45,15 @@ class App(QMainWindow):
         fileMenu.addAction(inputAct)
         fileMenu.addAction(targetAct)
         fileMenu.addAction(exitAct)
+
+        histogramAct = QAction('Equalize Histogram', self) 
+        histogramAct.triggered.connect(self.histogramButtonClicked)
         
-        self.setGeometry(100, 60, 1100, 675)
+        toolbar = self.addToolBar('Histogram Equalization')
+        toolbar.addAction(histogramAct)
+
         self.setWindowTitle(self.title) 
+        self.showMaximized()
         self.show()
 
     def histogramButtonClicked(self):
