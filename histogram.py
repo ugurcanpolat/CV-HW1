@@ -23,6 +23,8 @@ class App(QMainWindow):
         self.targetLoaded = False
         self.resultLoaded = False
 
+        self.setFixedSize(self.geometry().width(), self.geometry().height())
+
         self.initUI()
 
     def openInputImage(self):
@@ -42,8 +44,12 @@ class App(QMainWindow):
         self.inputLoaded = True
         self.inputImage = QPixmap(fName[0])
 
+        w = self.inputGroupBox.width()
+        h = self.inputGroupBox.height() / 2
+
         label = QLabel('Input image')
-        label.setPixmap(self.inputImage)
+        label.setPixmap(self.inputImage.scaled(w, h, Qt.KeepAspectRatio))
+        label.setAlignment(Qt.AlignCenter)
         self.inputGroupBox.layout().addWidget(label)
 
     def openTargetImage(self):
@@ -62,8 +68,12 @@ class App(QMainWindow):
         self.targetLoaded = True
         self.targetImage = QPixmap(fName[0])
 
+        w = self.targetGroupBox.width()
+        h = self.targetGroupBox.height() / 2
+
         label = QLabel('Target image')
-        label.setPixmap(self.targetImage)
+        label.setPixmap(self.targetImage.scaled(w, h, Qt.KeepAspectRatio))
+        label.setAlignment(Qt.AlignCenter)
         self.targetGroupBox.layout().addWidget(label)
 
     def initUI(self):
