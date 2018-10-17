@@ -53,10 +53,14 @@ class App(QMainWindow):
         w = self.inputGroupBox.width()
         h = self.inputGroupBox.height() / 2
 
+        self.inputHistogram = self.calcHistogram(self.inputImage)
+        canvas = PlotCanvas(self.inputHistogram, height=h/100, width=w/100)
+
         label = QLabel('Input image')
         label.setPixmap(pix.scaled(w, h, Qt.KeepAspectRatio))
         label.setAlignment(Qt.AlignCenter)
         self.inputGroupBox.layout().addWidget(label)
+        self.inputGroupBox.layout().addWidget(canvas)
 
     def openTargetImage(self):
         # This function is called when the user clicks File->Target Image.
@@ -83,10 +87,14 @@ class App(QMainWindow):
         w = self.targetGroupBox.width()
         h = self.targetGroupBox.height() / 2
 
+        self.targetHistogram = self.calcHistogram(self.targetImage)
+        canvas = PlotCanvas(self.targetHistogram, height=h/100, width=w/100)
+
         label = QLabel('Target image')
         label.setPixmap(pix.scaled(w, h, Qt.KeepAspectRatio))
         label.setAlignment(Qt.AlignCenter)
         self.targetGroupBox.layout().addWidget(label)
+        self.targetGroupBox.layout().addWidget(canvas)
 
     def initUI(self):
         menubar = self.menuBar()
@@ -211,16 +219,23 @@ class App(QMainWindow):
 
 class PlotCanvas(FigureCanvas):
     def __init__(self, hist, parent=None, width=5, height=4, dpi=100):
-        return NotImplementedError
+        self.f = plt.figure(figsize=(height, width))
+        FigureCanvas.__init__(self, self.f)
+
         # Init Canvas
         self.plotHistogram(hist)
 
     def plotHistogram(self, hist):
-        return NotImplementedError
-        # Plot histogram
+        self.f.add_subplot(3, 1, 1)
+        plt.bar(range(256), hist[0], align='center', alpha=0.5, color='r')
+        self.f.add_subplot(3, 1, 2)
+        plt.bar(range(256), hist[1], align='center', alpha=0.5, color='g')
+        self.f.add_subplot(3,1,3)
+        plt.bar(range(256), hist[2], align='center', alpha=0.5, color='b')
+
+        plt.tight_layout()
 
         self.draw()
-
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
