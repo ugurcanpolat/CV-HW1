@@ -180,7 +180,24 @@ class App(QMainWindow):
 
     def calcHistogram(self, I):
         # Calculate histogram
-        return NotImplementedError
+        b, g, r = cv2.split(I)
+
+        rHistogram = np.zeros((256), dtype=int)
+        gHistogram = np.zeros((256), dtype=int)
+        bHistogram = np.zeros((256), dtype=int)
+
+        for h in range(b.shape[0]):
+            for w in range(b.shape[1]):
+                rHistogram[r[h][w]] += 1
+                gHistogram[g[h][w]] += 1
+                bHistogram[b[h][w]] += 1
+
+        histogram = np.zeros((3, 256), dtype=int)
+        histogram[0] = rHistogram
+        histogram[1] = gHistogram
+        histogram[2] = bHistogram
+
+        return histogram
 
     def deleteItemsFromWidget(self, layout):
         if layout is not None:
