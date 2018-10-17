@@ -41,14 +41,20 @@ class App(QMainWindow):
         if self.resultLoaded:
             self.deleteItemsFromWidget(self.targetGroupBox.layout())
 
+        self.inputImage = cv2.imread(fName[0])
+
+        height, width, channel = self.inputImage.shape
+        bytesPerLine = 3 * width
+        qImg = QImage(self.inputImage.data, width, height, bytesPerLine, QImage.Format_RGB888).rgbSwapped()
+
         self.inputLoaded = True
-        self.inputImage = QPixmap(fName[0])
+        pix = QPixmap(qImg)
 
         w = self.inputGroupBox.width()
         h = self.inputGroupBox.height() / 2
 
         label = QLabel('Input image')
-        label.setPixmap(self.inputImage.scaled(w, h, Qt.KeepAspectRatio))
+        label.setPixmap(pix.scaled(w, h, Qt.KeepAspectRatio))
         label.setAlignment(Qt.AlignCenter)
         self.inputGroupBox.layout().addWidget(label)
 
@@ -65,14 +71,20 @@ class App(QMainWindow):
         if self.resultLoaded:
             self.deleteItemsFromWidget(self.targetGroupBox.layout())
 
+        self.targetImage = cv2.imread(fName[0])
+
+        height, width, channel = self.targetImage.shape
+        bytesPerLine = 3 * width
+        qImg = QImage(self.targetImage.data, width, height, bytesPerLine, QImage.Format_RGB888).rgbSwapped()
+
         self.targetLoaded = True
-        self.targetImage = QPixmap(fName[0])
+        pix = QPixmap(qImg)
 
         w = self.targetGroupBox.width()
         h = self.targetGroupBox.height() / 2
 
         label = QLabel('Target image')
-        label.setPixmap(self.targetImage.scaled(w, h, Qt.KeepAspectRatio))
+        label.setPixmap(pix.scaled(w, h, Qt.KeepAspectRatio))
         label.setAlignment(Qt.AlignCenter)
         self.targetGroupBox.layout().addWidget(label)
 
