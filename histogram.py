@@ -32,7 +32,7 @@ class App(QMainWindow):
 
         fName = QFileDialog.getOpenFileName(self, 'Open input file', './', 'Image files (*.png *.jpg)')
 
-        if fName[0] == '':
+        if fName[0] is '':
             return
 
         if self.inputLoaded:
@@ -66,7 +66,7 @@ class App(QMainWindow):
         # This function is called when the user clicks File->Target Image.
         fName = QFileDialog.getOpenFileName(self, 'Open target file', './', 'Image files (*.png *.jpg)')
 
-        if fName[0] == '':
+        if fName[0] is '':
             return
 
         if self.targetLoaded:
@@ -186,6 +186,29 @@ class App(QMainWindow):
 
             msg.exec()
 
+        matched = HistogramMatcher(self.inputImage, self.inputHistogram, self.targetImage, self.targetHistogram)
+        self.result = matched.result
+        self.resultHistogram = self.calcHistogram(self.result)
+
+        height, width, channels = self.result.shape
+        bytesPerLine = channels * width
+        qImg = QImage(self.result.data, width, height, bytesPerLine, QImage.Format_RGB888).rgbSwapped()
+
+        self.resultLoaded = True
+        pix = QPixmap(qImg)
+
+        w = self.resultGroupBox.width()
+        h = self.resultGroupBox.height() / 2
+
+        self.resultHistogram = self.calcHistogram(self.result)
+        canvas = PlotCanvas(self.resultHistogram, height=h/100, width=w/100)
+
+        label = QLabel('Result image')
+        label.setPixmap(pix.scaled(w, h, Qt.KeepAspectRatio))
+        label.setAlignment(Qt.AlignCenter)
+        self.resultGroupBox.layout().addWidget(label)
+        self.resultGroupBox.layout().addWidget(canvas)
+
     def calcHistogram(self, I):
         # Calculate histogram
         b, g, r = cv2.split(I)
@@ -216,6 +239,49 @@ class App(QMainWindow):
                     widget.deleteLater()
                 else:
                     deleteItemsFromWidget(item.layout())
+
+class HistogramMatcher:
+    def __init__(self, i, iHist, t, tHist):
+        iHeight, iWidth, _ = i.shape 
+        self.iSize = iHeight * iWidth
+
+        tHeight, tWidth, _ = t.shape 
+        self.tSize = tHeight * tWidth
+
+        self.constructLUT(iHist, tHist)
+        self.arrangeResult(i)
+
+    def calculateCDF(self, hist, size):
+        length = len(hist[0])
+        pdf = np.zeros((3,length))
+        pdf[:] = hist[:] / size
+
+        cdf = np.zeros((3,length))
+
+        for c in range(3):
+            cdf[c] = np.cumsum(pdf[c])
+
+        return cdf
+
+    def constructLUT(self, iHist, tHist):
+        cdfI = self.calculateCDF(iHist, self.iSize)
+        cdfT = self.calculateCDF(tHist, self.tSize)
+
+        self.lut = np.zeros((3, 256), dtype=int)
+
+        for c in range(3):
+            g_j = 0
+            for g_i in range(256):
+                while cdfT[c][g_j] < cdfI[c][g_i] and g_j < 255:
+                    g_j += 1
+                self.lut[c][g_i] = g_j
+
+    def arrangeResult(self, i):
+        self.result = i
+
+        self.result[:,:,0] = self.lut[2][i[:,:,0]]
+        self.result[:,:,1] = self.lut[1][i[:,:,1]]
+        self.result[:,:,2] = self.lut[0][i[:,:,2]]
 
 class PlotCanvas(FigureCanvas):
     def __init__(self, hist, parent=None, width=5, height=4, dpi=100):
