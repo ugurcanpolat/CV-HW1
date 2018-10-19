@@ -39,7 +39,7 @@ class App(QMainWindow):
             self.deleteItemsFromWidget(self.inputGroupBox.layout())
 
         if self.resultLoaded:
-            self.deleteItemsFromWidget(self.targetGroupBox.layout())
+            self.deleteItemsFromWidget(self.resultGroupBox.layout())
 
         self.inputImage = cv2.imread(fName[0])
 
@@ -73,7 +73,7 @@ class App(QMainWindow):
             self.deleteItemsFromWidget(self.targetGroupBox.layout())
 
         if self.resultLoaded:
-            self.deleteItemsFromWidget(self.targetGroupBox.layout())
+            self.deleteItemsFromWidget(self.resultGroupBox.layout())
 
         self.targetImage = cv2.imread(fName[0])
 
