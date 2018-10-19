@@ -44,6 +44,7 @@ class App(QMainWindow):
 
         if self.resultLoaded:
             self.deleteItemsFromWidget(self.resultGroupBox.layout())
+            self.resultLoaded = False
 
         self.inputImage = cv2.imread(fName[0]) # Read the image
 
