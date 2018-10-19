@@ -167,6 +167,7 @@ class App(QMainWindow):
             msg.setStandardButtons(QMessageBox.Ok)
 
             msg.exec()
+            return
         elif not self.inputLoaded:
             # Error: "Load input image" in MessageBox
             msg = QMessageBox()
@@ -176,6 +177,7 @@ class App(QMainWindow):
             msg.setStandardButtons(QMessageBox.Ok)
 
             msg.exec()
+            return
         elif not self.targetLoaded:
             # Error: "Load target image" in MessageBox
             msg = QMessageBox()
@@ -185,6 +187,7 @@ class App(QMainWindow):
             msg.setStandardButtons(QMessageBox.Ok)
 
             msg.exec()
+            return
 
         matched = HistogramMatcher(self.inputImage, self.inputHistogram, self.targetImage, self.targetHistogram)
         self.result = matched.result
