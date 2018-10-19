@@ -217,7 +217,6 @@ class App(QMainWindow):
         # Match histograms
         matched = HistogramMatcher(self.inputImage, self.inputHistogram, self.targetImage, self.targetHistogram)
         self.result = matched.result
-        self.resultHistogram = self.calcHistogram(self.result)
 
         # Get the height, width information
         height, width, channels = self.result.shape
